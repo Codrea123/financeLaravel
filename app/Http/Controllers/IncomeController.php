@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\IncomeRequest;
 use App\Http\Requests\ProfileUpdateRequest;
+use App\Models\Category;
 use App\Models\Incomes;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -14,18 +15,11 @@ class IncomeController extends Controller
     //crud for income model
     public function index()
     {
-        $categories = auth()->user()->categories;
+        $categories = auth()->user()->categories->where('type',Category::TYPE_INCOME);
         $incomes = Incomes::where('user_id', auth()->user()->id)->get();
         return view('income.index')->with([
             'incomes' => $incomes,
             'categories' => $categories,
-        ]);
-    }
-
-    public function create()
-    {
-        return view('income.create')->with([
-            'categories' => auth()->user()->categories,
         ]);
     }
 

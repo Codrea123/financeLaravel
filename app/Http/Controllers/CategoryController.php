@@ -30,7 +30,7 @@ class CategoryController extends Controller
         $category->user_id = auth()->user()->id;
         $category->type = $request->get('type');
         $category->save();
-        return redirect()->route('categories.index');
+        return redirect()->route('categories.index')->with('success','Category created successfully');
     }
     //write me the edit and update logic for the Category model
     public function edit(Category $category) {
@@ -43,12 +43,12 @@ class CategoryController extends Controller
         $category->user_id = auth()->user()->id;
         $category->type = $request->get('type');
         $category->update();
-        return redirect()->route('categories.index');
+        return redirect()->route('categories.index')->with('success','Category updated successfully');
     }
     //write me the delete logic for the Category model
     public function destroy(Category $category) {
         $category->delete();
-        return redirect()->route('categories.index');
+        return redirect()->route('categories.index')->with('success','Category deleted successfully');
     }
 
 }
