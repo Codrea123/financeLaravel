@@ -26,6 +26,7 @@
     </div>
 </div>
 <script>
+
     document.addEventListener('DOMContentLoaded', function () {
         var modal = document.getElementById('modal');
         var btnModal = document.getElementById('btnModal');
