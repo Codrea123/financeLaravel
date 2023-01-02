@@ -1,7 +1,4 @@
 <x-app-layout>
-
-
-
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg">
@@ -11,7 +8,10 @@
                             Income
                         </div>
                         <div class="mt-6 text-gray-500">
-                            <p>Here you can see your income.</p>
+                            <i class="fa fa-info-circle text-2xl text-gray-600" aria-hidden="true" id="infoIcon" ></i>
+                            <div id="infoText" class="hidden ">
+                                <p class="text-xl">Here you can see your income.<br> You can edit each field by clicking on it and then saving the changes using the green button on the left of the table</p>
+                            </div>
                         </div>
                         <br>
                         <table class="w-[100%]" id="myTable">
@@ -36,35 +36,43 @@
                             <!-- BODY start -->
                             <tbody class="bg-white text-center">
                             @foreach($incomes as $income)
-                                <tr>
-                                    <td class="px-6 py-4 whitespace-no-wrap border-b border-gray-200 " >
-                                        <div class="text-sm leading-5 text-gray-900">
-                                            <p>{{$income->name}}</p>
-                                        </div>
-                                    </td>
-                                    <td class="px-6 py-4 whitespace-no-wrap border-b border-gray-200">
-                                        <div class="text-sm leading-5 font-medium text-gray-900">
-                                            <p>{{$income->amount}}</p> RON
-                                        </div>
-                                    </td>
-                                    <td class="px-6 py-4 whitespace-no-wrap border-b border-gray-200">
-                                        <div class="text-sm leading-5 text-gray-900">
-                                                <p>{{$income->category->name ?? ''}}</p>
-                                        </div>
-                                    </td>
-                                    <td class="px-6 py-4 whitespace-no-wrap  border-b border-gray-200 text-sm leading-5 font-medium">
-                                        <form action="{{route('income.destroy',['income'=>$income])}}" method="POST">
-                                            @csrf
-                                            @method('DELETE')
-                                            <input type="hidden" name="id" value="{{$income->id}}">
-                                            <button type="submit" class="btn btn-danger"><i class="fa fa-trash-o text-3xl text-red-500" aria-hidden="true"></i></button>
-                                        </form>
-                                        <button>
-                                            <a href="{{route('income.edit',['income'=>$income])}}"><i class="fa fa-pencil-square text-3xl text-green-400" aria-hidden="true"></i></a>
-                                        </button>
-                                    </td>
+                                <form action="{{route('income.update',['income'=>$income])}}" method="POST">
+                                @csrf
+                                    @method('PUT')
+                                    <tr>
+                                        <td class="px-6 py-4 whitespace-no-wrap border-b border-gray-200 " >
+                                            <div class="text-sm leading-5 text-gray-900">
+                                                <input class="border-none border-transparent text-center" type="text" name="name" value="{{$income->name}}" placeholder="{{$income->name}}">
+                                            </div>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-no-wrap border-b border-gray-200">
+                                            <div class="text-sm leading-5 font-medium text-gray-900">
+                                                <input class="border-none border-transparent text-center" type="text" name="amount" value="{{$income->amount}}" placeholder="{{$income->amount}}">
+                                            </div>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-no-wrap border-b border-gray-200">
+                                            <div class="text-sm leading-5 text-gray-900">
+                                                <select name="category_id" id="categories" class="border-none">
+                                                    @foreach($categories as $category)
+                                                        <option class="text-center rounded-lg shadow-xl border-white" value="{{$category->id}}" {{$income->category->id == $category->id ? 'selected': ''}}>{{$category->name}}</option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-no-wrap  border-b border-gray-200 text-sm leading-5 font-medium">
+                                            <button type="submit">
+                                                <i class="fa fa-pencil-square text-3xl text-green-400" aria-hidden="true"></i>
+                                            </button>
 
-                                </tr>
+                                </form>
+                                            <form action="{{route('income.destroy',['income'=>$income])}}" method="POST">
+                                                @csrf
+                                                @method('DELETE')
+                                                <input type="hidden" name="id" value="{{$income->id}}">
+                                                <button type="submit" class="btn btn-danger"><i class="fa fa-trash-o text-3xl text-red-500" aria-hidden="true"></i></button>
+                                            </form>
+                                        </td>
+                                    </tr>
                             @endforeach
                             </tbody>
                         </table>
@@ -94,10 +102,20 @@
         @endif
         <script>
             document.addEventListener('DOMContentLoaded',function() {
+                var infoText = document.getElementById('infoText');
+                var infoIcon = document.getElementById('infoIcon');
                 var btn = document.getElementById('sortBtnAmount');
                 var arrD = document.getElementById('arrowDown');
                 var arrU = document.getElementById('arrowUp');
                 var n=0;
+
+                infoIcon.addEventListener('mouseover',function (){
+                    infoText.classList.remove('hidden');
+                })
+                infoIcon.addEventListener('mouseout',function (){
+                    infoText.classList.add('hidden');
+                })
+
                 btn.addEventListener('click', function (){
                     if(n==0){
                         n=1;
@@ -131,17 +149,17 @@
                                 shouldSwitch = false;
                                 /* Get the two elements you want to compare,
                                 one from current row and one from the next: */
-                                x = rows[i].getElementsByTagName("P")[1];
-                                y = rows[i + 1].getElementsByTagName("P")[1];
+                                x = rows[i].getElementsByTagName("INPUT")[1];
+                                y = rows[i + 1].getElementsByTagName("INPUT")[1];
                                 // Check if the two rows should switch place:
                                 if(n%2==0){
-                                    if (Number(x.innerHTML) < Number(y.innerHTML)) {
+                                    if (Number(x.value) < Number(y.value)) {
                                         // If so, mark as a switch and break the loop:
                                         shouldSwitch = true;
                                         break;
                                     }
                                 }else{
-                                    if (Number(x.innerHTML) > Number(y.innerHTML)) {
+                                    if (Number(x.value) > Number(y.value)) {
                                         // If so, mark as a switch and break the loop:
                                         shouldSwitch = true;
                                         break;
