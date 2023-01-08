@@ -47,7 +47,7 @@
                                         </td>
                                         <td class="px-6 py-4 whitespace-no-wrap border-b border-gray-200">
                                             <div class="text-sm leading-5 font-medium text-gray-900">
-                                                <input class="border-none border-transparent text-center" type="text" name="amount" value="{{$income->amount}}" placeholder="{{$income->amount}}">
+                                                <input class="border-none border-transparent text-center" type="number" name="amount" value="{{$income->amount}}" placeholder="{{$income->amount}}">
                                             </div>
                                         </td>
                                         <td class="px-6 py-4 whitespace-no-wrap border-b border-gray-200">
@@ -96,6 +96,17 @@
                         title: `{{session()->get('success')}}`,
                         showConfirmButton: false,
                         timer: 1500
+                    })
+                })
+            </script>
+        @endif
+        @if(session()->has('error'))
+            <script>
+                document.addEventListener('DOMContentLoaded',function(){
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: '{{session()->get('error')}}'
                     })
                 })
             </script>

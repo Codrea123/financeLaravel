@@ -6,6 +6,7 @@ use App\Http\Requests\IncomeRequest;
 use App\Http\Requests\ProfileUpdateRequest;
 use App\Models\Category;
 use App\Models\Incomes;
+use Faker\Core\Number;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
@@ -25,6 +26,7 @@ class IncomeController extends Controller
 
     public function store(IncomeRequest $request)
     {
+        if (is_numeric($request->amount)){
         $income = new Incomes();
         $income->name = $request->name;
         $income->amount = $request->amount;
@@ -33,27 +35,27 @@ class IncomeController extends Controller
         $income->save();
 
         return redirect()->route('income.index')->with('success', 'Income added successfully');
-    }
-
-    public function show(Incomes $income)
-    {
-        return view('income.show', compact('income'));
-    }
-
-    public function edit(Incomes $income)
-    {
-        return view('income.edit', compact('income'));
+        }
+        else{
+            return redirect()->route('income.index')->with('error', 'Amount must be a number!');
+        }
     }
 
     public function update(IncomeRequest $request, Incomes $income)
     {
-        $income->name = $request->name;
-        $income->amount = $request->amount;
-        $income->user_id = auth()->user()->id;
-        $income->category_id = $request->category_id;
-        $income->save();
+        if(is_numeric($request->amount)){
 
-        return redirect()->route('income.index')->with('success', 'Income updated successfully');
+            $income->name = $request->name;
+            $income->amount = $request->amount;
+            $income->user_id = auth()->user()->id;
+            $income->category_id = $request->category_id;
+            $income->save();
+
+            return redirect()->route('income.index')->with('success', 'Income updated successfully');
+
+        }else{
+            return \redirect()->route('income.index')->with('error', 'Amount must be a number!');
+        }
     }
 
     public function destroy(Incomes $income)

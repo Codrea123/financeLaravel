@@ -32,12 +32,7 @@ class CategoryController extends Controller
         $category->save();
         return redirect()->route('categories.index')->with('success','Category created successfully');
     }
-    //write me the edit and update logic for the Category model
-    public function edit(Category $category) {
-        return view('categories.edit')->with([
-            'category' => $category
-        ]);
-    }
+
     public function update(Request $request, Category $category) {
         $category->name = $request->get('name');
         $category->user_id = auth()->user()->id;
