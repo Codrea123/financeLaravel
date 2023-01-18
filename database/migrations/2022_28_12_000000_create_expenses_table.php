@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('name');
             $table->float('amount');
             $table->integer('user_id');
+            $table->integer('category_id');
             $table->rememberToken();
             $table->timestamps();
         });

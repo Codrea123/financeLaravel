@@ -64,4 +64,5 @@ class IncomeController extends Controller
 
         return redirect()->route('income.index')->with('success', 'Income deleted successfully');
     }
+
 }

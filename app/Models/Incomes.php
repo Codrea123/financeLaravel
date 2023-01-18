@@ -22,7 +22,8 @@ class Incomes extends Authenticatable
         'name',
         'amount',
         'user_id',
-        'category_id'
+        'category_id',
+
     ];
 
     public function user()
